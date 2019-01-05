@@ -3,28 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Joi = require('joi'); // for validating js objects on post requests
 
-const customerSchema = new mongoose.Schema({
-  customerName: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 20,
-    trim: true
-  },
-  isGold: {
-    type: Boolean,
-    default: false
-  },
-  phone: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 20,
-    trim: true
-  }
-});
-
-const Customer = mongoose.model('Customer', customerSchema);
+const Customer = require('../models/customer');
 
 // GETTING ALL CUSTOMERS
 router.get('', async (req, res) => {

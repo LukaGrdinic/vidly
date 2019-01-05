@@ -2,18 +2,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi'); // for validating js objects on post requests
-
-const genreSchema = new mongoose.Schema({
-  genreName: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 20,
-    trim: true
-  }
-});
-
-const Genre = mongoose.model('Genre', genreSchema);
+const {Genre} = require('../models/genre');
 
 // GETTING ALL GENRES
 router.get('', async (req, res) => {
