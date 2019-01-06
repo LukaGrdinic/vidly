@@ -54,11 +54,6 @@ router.post('', async(req, res) => {
     catch (err) {
         res.status(500).send('Something failed');
     }
-/* 
-    rental = await rental.save();
-    movie.numberInStock--;
-    movie.save();
- */
     res.send(rental);
 });
 
