@@ -4,6 +4,7 @@ const router = express.Router();
 const Joi = require('joi'); // for validating js objects on post requests
 const { Movie } = require('../models/movie');
 const { Genre } = require('../models/genre');
+const auth = require('../middleware/auth');
 
 // GETTING ALL MOVIES
 router.get('', async (req, res) => {
@@ -17,7 +18,7 @@ router.get('/:id', async (req, res) => {
   res.send(movie);
 });
 // ADDING A NEW MOVIE
-router.post('', async (req, res) => {
+router.post('',auth, async (req, res) => {
   const movieShape = {
     title: Joi.string()
       .min(3)
@@ -47,7 +48,7 @@ router.post('', async (req, res) => {
   res.send(newMovie);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id',auth, async (req, res) => {
   const movie = await Movie.findById(req.params.id);
   console.log('MOVIE',movie);
 
@@ -81,7 +82,7 @@ router.put('/:id', async (req, res) => {
   res.send(updatedMovie);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',auth,  async (req, res) => {
     const deletedMovie = await Movie.findByIdAndRemove(req.params.id);
     if (!deletedMovie) {
         return res.status(404).send('The movie with the specified id was not found');

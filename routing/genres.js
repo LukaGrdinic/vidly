@@ -2,11 +2,15 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi'); // for validating js objects on post requests
-const {Genre} = require('../models/genre');
+const { Genre } = require('../models/genre');
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 // GETTING ALL GENRES
 router.get('', async (req, res) => {
-  const genresNames = await Genre.find({}).sort('genreName').select('genreName');
+  const genresNames = await Genre.find({})
+    .sort('genreName')
+    .select('genreName');
   res.send(genresNames);
 });
 // GETTING A SPECIFIC GENRE
@@ -19,7 +23,7 @@ router.get('/:id', async (req, res) => {
   res.send(genre);
 });
 // ADDING A NEW GENRE
-router.post('', async (req, res) => {
+router.post('', auth, async (req, res) => {
   // Validating the payload
   const genreShape = {
     name: Joi.string()
@@ -41,7 +45,7 @@ router.post('', async (req, res) => {
   res.send(savedGenre);
 });
 // UPDATING A GENRE
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   const genre = await Genre.findById(req.params.id);
   // Checking if a valid id was requested
   if (!genre) {
@@ -69,12 +73,12 @@ router.put('/:id', async (req, res) => {
   res.send(updatedGenre);
 });
 // DELETING A GENRE
-router.delete('/:id', async  (req, res) => {
-      const result = await Genre.findByIdAndRemove(req.params.id);
-      if (!result) {
-        return res.status(500).send('There was an error saving to database');
-      }
-      res.send(result);
+router.delete('/:id', [auth, admin], async (req, res) => {
+  const result = await Genre.findByIdAndRemove(req.params.id);
+  if (!result) {
+    return res.status(500).send('There was an error saving to database');
+  }
+  res.send(result);
 });
 
 module.exports = router;

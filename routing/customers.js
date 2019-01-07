@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi'); // for validating js objects on post requests
+const auth = require('../middleware/auth');
 
 const Customer = require('../models/customer');
 
@@ -23,7 +24,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 // ADDING A NEW CUSTOMER
-router.post('', async (req, res) => {
+router.post('', auth, async (req, res) => {
   // Validating the payload
   const customerShape = {
     name: Joi.string()
@@ -52,13 +53,13 @@ router.post('', async (req, res) => {
   res.send(savedGenre);
 });
 // UPDATING A CUSTOMER
-router.put('/:id', async (req, res) => {
-   
-    const customer = await Customer.findById(req.params.id);
-    if (!customer) { // This never returns a response if not handled
-        return res.status(404).send('There is no customer with such id');
-    }
-    
+router.put('/:id', auth, async (req, res) => {
+  const customer = await Customer.findById(req.params.id);
+  if (!customer) {
+    // This never returns a response if not handled
+    return res.status(404).send('There is no customer with such id');
+  }
+
   // Validating the payload
   const customerShape = {
     name: Joi.string()
@@ -79,7 +80,7 @@ router.put('/:id', async (req, res) => {
   customer.set({
     customerName: req.body.name,
     phone: req.body.phone,
-    isGold: req.body.isGold,
+    isGold: req.body.isGold
   });
   const updatedCustomer = await customer.save();
   if (!updatedCustomer) {
@@ -88,12 +89,12 @@ router.put('/:id', async (req, res) => {
   res.send(updatedCustomer);
 });
 // DELETING A CUSTOMER
-router.delete('/:id', async  (req, res) => {
-    const result = await Customer.findByIdAndRemove(req.params.id);
-    if (!result) {
-      return res.status(500).send('There was an error saving to database');
-    }
-    res.send(result);
+router.delete('/:id', auth, async (req, res) => {
+  const result = await Customer.findByIdAndRemove(req.params.id);
+  if (!result) {
+    return res.status(500).send('There was an error saving to database');
+  }
+  res.send(result);
 });
 
 module.exports = router;
