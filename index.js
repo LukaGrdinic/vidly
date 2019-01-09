@@ -1,4 +1,6 @@
 const config = require('config');
+require('express-async-errors');
+const winston = require('winston');
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
@@ -8,16 +10,24 @@ const moviesRouter = require('./routing/movies');
 const rentalsRouter = require('./routing/rentals');
 const usersRouter = require('./routing/users');
 const auth = require('./routing/auth');
-
-if (!config.get('jwtPrivateKey')) {
+const error = require('./middleware/error');
+/* if (!config.get('jwtPrivateKey')) {
   console.error('FATAL ERROR: jwtPrivateKey is not defined');
   process.exit(1);
-}
+} */
+winston.add(new winston.transports.File({
+  filename: 'logfile.log',
+  handleExceptions: true
+}));
 
-
-const db = mongoose.connect('mongodb://localhost/vidly')
-  .then(() => {console.log('Connected to MongoDB!'); })
-  .catch(() => {console.log('Could not connect to MongoDB...');});
+const db = mongoose
+  .connect('mongodb://localhost/vidly')
+  .then(() => {
+    console.log('Connected to MongoDB!');
+  })
+  .catch(() => {
+    console.log('Could not connect to MongoDB...');
+  });
 
 app.use(express.json()); // This should work instead of bodyParser
 app.use('/api/genres', genresRouter);
@@ -26,6 +36,8 @@ app.use('/api/movies', moviesRouter);
 app.use('/api/rentals', rentalsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/auth', auth);
+
+app.use(error);
 
 app.get('/', (req, res) => {
   res.send('Hello User!');

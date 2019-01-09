@@ -5,23 +5,28 @@ const Joi = require('joi'); // for validating js objects on post requests
 const { Genre } = require('../models/genre');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
-
+/* const asyncMiddleware = require('../middleware/async'); */
 // GETTING ALL GENRES
-router.get('', async (req, res) => {
+router.get('', async (req, res, next) => {
+  throw new Error('Could not get the genres');
   const genresNames = await Genre.find({})
     .sort('genreName')
     .select('genreName');
   res.send(genresNames);
 });
 // GETTING A SPECIFIC GENRE
-router.get('/:id', async (req, res) => {
-  const genre = await Genre.findById(req.params.id);
-  // Checking if a valid id was requested
-  if (!genre) {
-    return res.status(404).send('There is no genre with such id');
+router.get(
+  '/:id',
+  /* asyncMiddleware(async (req, res) => { // Using async middleware if there was no express-async-errors module */
+  async (req, res) => {
+    const genre = await Genre.findById(req.params.id);
+    // Checking if a valid id was requested
+    if (!genre) {
+      return res.status(404).send('There is no genre with such id');
+    }
+    res.send(genre);
   }
-  res.send(genre);
-});
+);
 // ADDING A NEW GENRE
 router.post('', auth, async (req, res) => {
   // Validating the payload
