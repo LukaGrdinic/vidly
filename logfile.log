@@ -1,1 +1,9 @@
-
+{"message":"App is listening on port 3000","level":"info"}
+{"message":"Connected to mongodb://localhost/vidly_test...","level":"info"}
+{"message":"App is listening on port 3000","level":"info"}
+{"message":"App is listening on port 3000","level":"info"}
+{"level":"error","message":"Could not get the genres"}
+{"message":"App is listening on port 3000","level":"info"}
+{"message":"Connected to mongodb://localhost/vidly_test...","level":"info"}
+{"message":"App is listening on port 3000","level":"info"}
+{"message":"Connected to mongodb://localhost/vidly_test...","level":"info"}

@@ -8,7 +8,7 @@ const admin = require('../middleware/admin');
 /* const asyncMiddleware = require('../middleware/async'); */
 // GETTING ALL GENRES
 router.get('', async (req, res, next) => {
-  throw new Error('Could not get the genres');
+ /*  throw new Error('Could not get the genres'); */
   const genresNames = await Genre.find({})
     .sort('genreName')
     .select('genreName');
