@@ -5,6 +5,7 @@ const Joi = require('joi'); // for validating js objects on post requests
 const { Genre } = require('../models/genre');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 /* const asyncMiddleware = require('../middleware/async'); */
 // GETTING ALL GENRES
 router.get('', async (req, res, next) => {
@@ -16,7 +17,7 @@ router.get('', async (req, res, next) => {
 });
 // GETTING A SPECIFIC GENRE
 router.get(
-  '/:id',
+  '/:id', validateObjectId,
   /* asyncMiddleware(async (req, res) => { // Using async middleware if there was no express-async-errors module */
   async (req, res) => {
     const genre = await Genre.findById(req.params.id);
