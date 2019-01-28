@@ -7,5 +7,8 @@ module.exports = function() {
     .connect(config.get('db'))
     .then(() => {
       winston.info(`Connected to ${config.get('db')}...`);
-    });
+    })
+    .catch((err) => {
+      winston.info(`Error occured: ${err.message}`)
+    } );
 };
