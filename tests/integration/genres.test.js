@@ -93,4 +93,57 @@ describe('/api/genres', () => {
       expect(res.body).toHaveProperty('genreName', 'genre1');
     });
   });
+
+  describe('PUT/:id', () => {
+    it('should return 404 if the genre with the given id does not exist', async() => {
+      const token = new User().generateAuthToken();
+
+      const res = await request(server)
+        .put('/api/genres/1')
+        .set('x-auth-token', token)
+        .send({ name: 'genre1' });
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 400 if the submitted genre value is shorter than 3 characters', async() => {
+      const token = new User().generateAuthToken();
+      const genre = new Genre({ genreName: 'genre1' });
+      await genre.save();
+
+      const res = await request(server)
+        .put('/api/genres/' + genre._id)
+        .set('x-auth-token', token)
+        .send({ name: 'x' });
+
+      expect(res.status).toBe(400);
+    });
+    it('should return 400 if the submitted genre value is longer than 20 characters', async() => {
+      const token = new User().generateAuthToken();
+      const genre = new Genre({ genreName: 'genre1' });
+      await genre.save();
+
+      const name = new Array(22).join('a');
+
+      const res = await request(server)
+        .put('/api/genres/' + genre._id)
+        .set('x-auth-token', token)
+        .send({ name: name });
+
+      expect(res.status).toBe(400);
+    });
+    it('should return 200 if the submitted genre successefully updated previous genre', async() => {
+      const token = new User().generateAuthToken();
+      const genre = new Genre({ genreName: 'genre1' });
+      await genre.save();
+
+      const res = await request(server)
+        .put('/api/genres/' + genre._id)
+        .set('x-auth-token', token)
+        .send({ name: 'genre2' });
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('genreName', 'genre2');
+    });
+  });
 });

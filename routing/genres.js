@@ -9,7 +9,7 @@ const validateObjectId = require('../middleware/validateObjectId');
 /* const asyncMiddleware = require('../middleware/async'); */
 // GETTING ALL GENRES
 router.get('', async (req, res, next) => {
- /*  throw new Error('Could not get the genres'); */
+  /*  throw new Error('Could not get the genres'); */
   const genresNames = await Genre.find({})
     .sort('genreName')
     .select('genreName');
@@ -17,7 +17,8 @@ router.get('', async (req, res, next) => {
 });
 // GETTING A SPECIFIC GENRE
 router.get(
-  '/:id', validateObjectId,
+  '/:id',
+  validateObjectId,
   /* asyncMiddleware(async (req, res) => { // Using async middleware if there was no express-async-errors module */
   async (req, res) => {
     const genre = await Genre.findById(req.params.id);
@@ -51,7 +52,7 @@ router.post('', auth, async (req, res) => {
   res.send(savedGenre);
 });
 // UPDATING A GENRE
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', validateObjectId, auth, async (req, res) => {
   const genre = await Genre.findById(req.params.id);
   // Checking if a valid id was requested
   if (!genre) {
