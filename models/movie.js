@@ -17,11 +17,11 @@ const Movie = mongoose.model(
         type: Number,
         required: true,
         min: 0
-    }/* ,
+    },
     dailyRentalRate: {
         type: Number,
         min: 0
-    } */
+    }
   })
 );
 
