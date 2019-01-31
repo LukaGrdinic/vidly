@@ -15,6 +15,12 @@ router.post("/", auth, async (req, res, next) => {
   if (!rental) {
     return res.status(404).send("Rental not found.");
   }
+
+  if (rental.dateReturned) {
+    return res.status(400).send('Return is already processed');
+  }
+
+  return res.status(200).send();
 });
 
 module.exports = router;
