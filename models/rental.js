@@ -31,10 +31,11 @@ const Rental = mongoose.model('Rental', new mongoose.Schema({
                 minlength: 1,
                 maxlength: 255
             },
-            /* dailyRentalRate: {
+            dailyRentalRate: {
                 type: Number,
-                required: true
-            } */
+                required: true,
+                min: 1
+            }
         }),
         required: true
     },

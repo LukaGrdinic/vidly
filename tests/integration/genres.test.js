@@ -169,7 +169,8 @@ describe('/api/genres', () => {
 
       const res = await request(server)
       .delete('/api/genres/' + genre._id)
-      .set('x-auth-token', token);
+      .set('x-auth-token', token)
+      .send();
 
       expect(res.status).toBe(200);
     });
