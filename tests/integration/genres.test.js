@@ -146,4 +146,32 @@ describe('/api/genres', () => {
       expect(res.body).toHaveProperty('genreName', 'genre2');
     });
   });
+
+  describe('DELETE/:id', () => {
+    it('should return 500 if the given id does not exist', async() => {
+      const adminUser = new User();
+      adminUser.isAdmin = true;
+      const token = adminUser.generateAuthToken();
+      const genre = new Genre({ genreName: 'genre1' });
+
+      const res = await request(server)
+      .delete('/api/genres/' + genre._id)
+      .set('x-auth-token', token);
+
+      expect(res.status).toBe(500);
+    });
+    it('should return 200 if the genre with provided id is deleted', async() => {
+      const adminUser = new User();
+      adminUser.isAdmin = true;
+      const token = adminUser.generateAuthToken();
+      const genre = new Genre({ genreName: 'genre1' });
+      await genre.save();
+
+      const res = await request(server)
+      .delete('/api/genres/' + genre._id)
+      .set('x-auth-token', token);
+
+      expect(res.status).toBe(200);
+    });
+  })
 });

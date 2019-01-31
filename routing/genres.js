@@ -80,7 +80,7 @@ router.put('/:id', validateObjectId, auth, async (req, res) => {
   res.send(updatedGenre);
 });
 // DELETING A GENRE
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', validateObjectId, [auth, admin], async (req, res) => {
   const result = await Genre.findByIdAndRemove(req.params.id);
   if (!result) {
     return res.status(500).send('There was an error saving to database');
