@@ -30,7 +30,7 @@ router.get(
   }
 );
 // ADDING A NEW GENRE
-router.post('', auth, async (req, res) => {
+router.post('', [auth, admin], async (req, res) => {
   // Validating the payload
   const genreShape = {
     name: Joi.string()
@@ -52,7 +52,7 @@ router.post('', auth, async (req, res) => {
   res.send(savedGenre);
 });
 // UPDATING A GENRE
-router.put('/:id', validateObjectId, auth, async (req, res) => {
+router.put('/:id', validateObjectId, [auth, admin], async (req, res) => {
   const genre = await Genre.findById(req.params.id);
   // Checking if a valid id was requested
   if (!genre) {
