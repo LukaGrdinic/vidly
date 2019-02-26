@@ -1,0 +1,22 @@
+ADMIN USERS:
+
+{
+    "name": "admin",
+	"email": "admin@admin.com",
+	"password": "admin1"
+}
+
+REGULAR USERS:
+
+{
+	"name": "user1",
+	"email": "user@user.com",
+	"password": "user123"
+},
+{
+    "name": "user2",
+	"email": "user2@user.com",
+	"password": "user123",
+	"isGold": false,
+	"phone": "123456789"
+}
