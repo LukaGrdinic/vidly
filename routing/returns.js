@@ -9,15 +9,15 @@ const validate = require('../middleware/validate');
 
 router.post("/", [auth, validate(validateReturn)], async (req, res, next) => {
 
-  const rental = await Rental.lookup(req.body.customerId, req.body.movieId);
+  const rental = await Rental.lookup(req.body.userId, req.body.movieId); // FINDS ONLY RENTALS THAT ARE NOT RETURNED
 
   if (!rental) {
-    return res.status(404).send("Rental not found.");
+    return res.status(404).send("Rental not found or already processed.");
   }
 
-  if (rental.dateReturned) {
+  /* if (rental.dateReturned) {
     return res.status(400).send("Return is already processed");
-  }
+  } */
 
   rental.return();
 
@@ -35,7 +35,7 @@ router.post("/", [auth, validate(validateReturn)], async (req, res, next) => {
 
 function validateReturn(req) {
   const schema = {
-    customerId: Joi.objectId().required(), // objectId() validator? Joi.objectId
+    userId: Joi.objectId().required(), // objectId() validator? Joi.objectId
     movieId: Joi.objectId().required()
   };
 

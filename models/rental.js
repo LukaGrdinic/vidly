@@ -12,13 +12,13 @@ const rentalSchema = new mongoose.Schema({
       },
       email: {
         type: String,
-        required: true,
+        /* required: true, */
         minlength: 5,
         maxlength: 255,
       },
       password: {
         type: String,
-        required: true,
+        /* required: true, */
         minlength: 5,
         maxlength: 1024
       },
@@ -31,7 +31,7 @@ const rentalSchema = new mongoose.Schema({
       },
       phone: {
         type: String,
-        required: false,
+        required: true,
         minlength: 3,
         maxlength: 20,
         trim: true
@@ -51,6 +51,7 @@ const rentalSchema = new mongoose.Schema({
       dailyRentalRate: {
         type: Number,
         required: true,
+        default: 1,
         min: 1
       }
     }),
@@ -73,14 +74,15 @@ const rentalSchema = new mongoose.Schema({
 rentalSchema.statics.lookup = function(userId, movieId) {
   return this.findOne({
     "user._id": userId,
-    "movie._id": movieId
-  });
+    "movie._id": movieId,
+    dateReturned: undefined // SHOULD RETURN ONLY MOVIES THAT DONT HAVE DATE RETURNED
+  }); 
 };
 
 rentalSchema.methods.return = function() {
   this.dateReturned = new Date();
 
-  const rentalDays = moment().diff(this.dateOut, "days");
+  const rentalDays = moment().diff(this.dateOut, "days") + 1;
   this.rentalFee = rentalDays * this.movie.dailyRentalRate;
 };
 const Rental = mongoose.model("Rental", rentalSchema);

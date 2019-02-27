@@ -7,6 +7,7 @@ Fawn.init(mongoose);
 const Rental = require('../models/rental');
 const { User } = require('../models/user');
 const { Movie } = require('../models/movie');
+const auth = require('../middleware/auth');
 
 // GET ALL RENTALS
 router.get('', async (req, res) => {
@@ -14,7 +15,7 @@ router.get('', async (req, res) => {
   res.send(rentals);
 });
 // ADD A NEW RENTAL
-router.post('', async (req, res) => {
+router.post('', auth, async (req, res) => {
   const rentalShape = {
     userId: Joi.string().required(),
     movieId: Joi.string().required()
@@ -23,6 +24,12 @@ router.post('', async (req, res) => {
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
+
+  const rentalLookup = await Rental.lookup(req.body.userId, req.body.movieId);
+  if (rentalLookup) {
+    return res.status(400).send("User with provided ID already rented a movie with provided ID");
+  }
+
   const user = await User.findById(req.body.userId);
   if (!user) {
     return res.status(404).send('There is no user with provided id!');
@@ -53,7 +60,7 @@ router.post('', async (req, res) => {
 
   try {
     new Fawn.Task()
-      .save('rentals', rental)
+      .save('rentals', rental) 
       .update('movies', { _id: movie._id }, { $inc: { numberInStock: -1 } })
       .run();
     return res.send(rental);
