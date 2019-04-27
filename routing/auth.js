@@ -6,6 +6,7 @@ const { User } = require("../models/user");
 const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
+const auth = require('../middleware/auth');
 
 router.post("/", async (req, res) => {
   // Validating the payload
@@ -23,7 +24,11 @@ router.post("/", async (req, res) => {
   }
 
   const token = user.generateAuthToken();
-  res.send(token);
+  res.json(token);
+});
+
+router.post("/check-session", auth, (req, res) => {
+  res.json({user: 'Logged in!'});
 });
 
 function validate(request) {
